@@ -4,9 +4,9 @@ Estado: `[ ]` pendiente · `[~]` en progreso · `[x]` hecho
 
 ## F0 — Fundaciones y esquema de datos
 
-- [ ] Scaffold Next.js 15 + TS + Tailwind + ESLint/Prettier
-- [ ] Proyecto Supabase + cliente tipado (`supabase gen types`)
-- [ ] Migraciones:
+- [x] Scaffold Next.js 15 + TS + Tailwind + ESLint/Prettier
+- [~] Proyecto Supabase + cliente tipado (init listo; tipos escritos a mano, regenerar con `npm run db:types` cuando Supabase local esté arriba)
+- [~] Migraciones (escritas, pendiente verificar con `db reset`):
   - `products` (id, name, slug, description, price_cop, type, status[active|sold_out|hidden], featured, created_at)
   - `occasions` (id, name, slug, emoji) + `product_occasions` (N:M)
   - `product_images` (product_id, storage_path, position)
@@ -15,8 +15,8 @@ Estado: `[ ]` pendiente · `[~]` en progreso · `[x]` hecho
   - `quotes` (id, line[events|corporate], name, phone, email?, event_type?, date?, guests?, company?, quantity?, budget?, message, status[new|contacted|closed], created_at)
   - `delivery_zones` (id, municipality, fee_cop, active)
   - `banners` (id, title, image_path, link?, starts_at, ends_at, active)
-- [ ] RLS: público lee products activos + banners vigentes + zones activas; admin todo
-- [ ] Seeds de ejemplo (productos con flag `ejemplo`, ocasiones reales, zonas: La Unión, La Ceja, Rionegro, El Retiro, Carmen de Viboral, Marinilla)
+- [~] RLS: público lee products activos + banners vigentes + zones activas; admin todo (escrita, pendiente verificar)
+- [~] Seeds de ejemplo (escritos: 14 productos `is_example` con fotos reales del feed IG, ocasiones, tipos, zonas; pendiente verificar)
 
 ## F1 — Catálogo público
 

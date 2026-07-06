@@ -1,103 +1,229 @@
 import Image from "next/image";
+import Link from "next/link";
 
-export default function Home() {
+import {
+  ArrowRightIcon,
+  HeartIcon,
+  TruckIcon,
+  WhatsAppIcon,
+} from "@/components/icons";
+import { ProductCard } from "@/components/product-card";
+import {
+  getCurrentBanner,
+  getFeaturedProducts,
+  type Banner,
+  type CatalogProduct,
+} from "@/lib/data/catalog";
+import { orFallback } from "@/lib/safe";
+import { site, waDefault } from "@/lib/site";
+import { resolveImageUrl } from "@/lib/supabase/public";
+
+export const revalidate = 300;
+
+export default async function HomePage() {
+  const [banner, featured] = await Promise.all([
+    orFallback<Banner | null>(getCurrentBanner(), null),
+    orFallback<CatalogProduct[]>(getFeaturedProducts(8), []),
+  ]);
+
+  const collage = featured.filter((p) => p.images.length > 0).slice(0, 3);
+
   return (
-    <div className="grid min-h-screen grid-rows-[20px_1fr_20px] items-center justify-items-center gap-16 p-8 pb-20 font-sans sm:p-20">
-      <main className="row-start-2 flex flex-col items-center gap-[32px] sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-center font-mono text-sm/6 sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="rounded bg-black/[.05] px-1 py-0.5 font-mono font-semibold dark:bg-white/[.06]">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <>
+      {banner && (
+        <section aria-label="Temporada" className="bg-pink text-white">
+          <Link
+            href={banner.link ?? "/detalles"}
+            className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2.5 text-center text-sm"
+          >
+            <span className="font-semibold">{banner.title}</span>
+            {banner.subtitle && (
+              <span className="opacity-90">{banner.subtitle}</span>
+            )}
+            <ArrowRightIcon className="h-4 w-4 shrink-0" />
+          </Link>
+        </section>
+      )}
 
-        <div className="flex flex-col items-center gap-4 sm:flex-row">
-          <a
-            className="bg-foreground text-background flex h-10 items-center justify-center gap-2 rounded-full border border-solid border-transparent px-4 text-sm font-medium transition-colors hover:bg-[#383838] sm:h-12 sm:w-auto sm:px-5 sm:text-base dark:hover:bg-[#ccc]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="flex h-10 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-4 text-sm font-medium transition-colors hover:border-transparent hover:bg-[#f2f2f2] sm:h-12 sm:w-auto sm:px-5 sm:text-base md:w-[158px] dark:border-white/[.145] dark:hover:bg-[#1a1a1a]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      {/* Hero */}
+      <section className="mx-auto grid max-w-6xl items-center gap-10 px-4 pt-12 pb-16 sm:pt-16 lg:grid-cols-2">
+        <div>
+          <p className="font-script text-pink text-2xl sm:text-3xl">
+            {site.tagline}
+          </p>
+          <h1 className="font-display text-ink mt-3 text-4xl leading-tight font-medium sm:text-5xl">
+            ¿Hacemos sentir a alguien especial hoy?
+          </h1>
+          <p className="text-ink-soft mt-5 max-w-prose text-lg leading-relaxed">
+            Anchetas, desayunos sorpresa, flores y detalles personalizados,
+            armados a mano en {site.location} y entregados en todo el oriente
+            antioqueño.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link
+              href="/detalles"
+              className="bg-pink hover:bg-pink-deep inline-flex items-center gap-2 rounded-full px-6 py-3 font-semibold text-white shadow-sm transition-colors"
+            >
+              Ver catálogo
+              <ArrowRightIcon className="h-4 w-4" />
+            </Link>
+            <a
+              href={waDefault}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="border-pink text-pink hover:bg-pink-soft inline-flex items-center gap-2 rounded-full border-2 px-6 py-3 font-semibold transition-colors"
+            >
+              <WhatsAppIcon className="h-4 w-4" />
+              Pedir por WhatsApp
+            </a>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex flex-wrap items-center justify-center gap-[24px]">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+
+        {collage.length > 0 && (
+          <div className="mx-auto flex max-w-md items-center justify-center">
+            {collage.map((product, i) => (
+              <Link
+                key={product.id}
+                href={`/detalles/${product.slug}`}
+                className={`relative block w-36 shrink-0 overflow-hidden rounded-2xl border-4 border-white shadow-lg transition-transform hover:z-10 hover:scale-105 sm:w-44 ${
+                  i === 0
+                    ? "z-[2] -rotate-6"
+                    : i === 1
+                      ? "z-[3] translate-y-4"
+                      : "z-[1] -translate-x-2 rotate-6"
+                } ${i > 0 ? "-ml-8" : ""}`}
+              >
+                <Image
+                  src={resolveImageUrl(product.images[0].storage_path)}
+                  alt={product.name}
+                  width={352}
+                  height={440}
+                  className="aspect-[4/5] object-cover"
+                />
+              </Link>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Las 3 líneas */}
+      <section className="mx-auto max-w-6xl px-4 pb-16">
+        <h2 className="font-display text-ink text-2xl sm:text-3xl">
+          Tres formas de dar amor
+        </h2>
+        <div className="mt-6 grid gap-4 sm:grid-cols-3">
+          <Link
+            href="/detalles"
+            className="group bg-pink-soft rounded-(--radius-card) p-6 transition-shadow hover:shadow-md"
+          >
+            <p className="font-script text-pink text-2xl">Detalles</p>
+            <p className="text-ink mt-2 text-sm leading-relaxed">
+              Anchetas, flores, desayunos y sorpresas para cada ocasión. Pide
+              directo del catálogo.
+            </p>
+            <span className="text-pink mt-4 inline-flex items-center gap-1 text-sm font-semibold">
+              Ver catálogo
+              <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </span>
+          </Link>
+
+          <Link
+            href="/eventos"
+            className="group bg-night rounded-(--radius-card) p-6 transition-shadow hover:shadow-md"
+          >
+            <p className="font-script text-gold text-2xl">Eventos</p>
+            <p className="text-gold-soft mt-2 text-sm leading-relaxed">
+              Decoración y montaje de celebraciones con Con Sentidos Event
+              Planner. Cotiza tu fecha.
+            </p>
+            <span className="text-gold mt-4 inline-flex items-center gap-1 text-sm font-semibold">
+              Cotizar evento
+              <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </span>
+          </Link>
+
+          <Link
+            href="/personalizados"
+            className="group bg-blue-soft rounded-(--radius-card) p-6 transition-shadow hover:shadow-md"
+          >
+            <p className="font-script text-blue-deep text-2xl">
+              Personalizados
+            </p>
+            <p className="text-ink mt-2 text-sm leading-relaxed">
+              Detalles corporativos y personalizados para tu equipo, clientes y
+              proveedores.
+            </p>
+            <span className="text-blue-deep mt-4 inline-flex items-center gap-1 text-sm font-semibold">
+              Cotizar pedido
+              <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </span>
+          </Link>
+        </div>
+      </section>
+
+      {/* Destacados */}
+      {featured.length > 0 && (
+        <section className="bg-white/60 py-16">
+          <div className="mx-auto max-w-6xl px-4">
+            <div className="flex items-end justify-between gap-4">
+              <h2 className="font-display text-ink text-2xl sm:text-3xl">
+                Los favoritos
+              </h2>
+              <Link
+                href="/detalles"
+                className="text-pink hover:text-pink-deep inline-flex shrink-0 items-center gap-1 text-sm font-semibold"
+              >
+                Ver todo
+                <ArrowRightIcon className="h-4 w-4" />
+              </Link>
+            </div>
+            <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+              {featured.slice(0, 8).map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Cómo funciona */}
+      <section className="mx-auto max-w-6xl px-4 py-16">
+        <h2 className="font-display text-ink text-2xl sm:text-3xl">
+          Así de fácil
+        </h2>
+        <div className="mt-6 grid gap-6 sm:grid-cols-3">
+          <div className="border-pink-soft rounded-(--radius-card) border bg-white p-6">
+            <HeartIcon className="text-pink h-6 w-6" />
+            <h3 className="font-display text-ink mt-3 text-lg">
+              1. Escoge el detalle
+            </h3>
+            <p className="text-ink-soft mt-1 text-sm leading-relaxed">
+              Filtra por ocasión en el catálogo o cuéntanos tu idea por
+              WhatsApp.
+            </p>
+          </div>
+          <div className="border-pink-soft rounded-(--radius-card) border bg-white p-6">
+            <WhatsAppIcon className="text-pink h-6 w-6" />
+            <h3 className="font-display text-ink mt-3 text-lg">
+              2. Personalízalo
+            </h3>
+            <p className="text-ink-soft mt-1 text-sm leading-relaxed">
+              Dinos el mensaje de la tarjeta y la fecha y hora en que quieres
+              entregarlo.
+            </p>
+          </div>
+          <div className="border-pink-soft rounded-(--radius-card) border bg-white p-6">
+            <TruckIcon className="text-pink h-6 w-6" />
+            <h3 className="font-display text-ink mt-3 text-lg">
+              3. Lo llevamos
+            </h3>
+            <p className="text-ink-soft mt-1 text-sm leading-relaxed">
+              Recoge en {site.location} o te lo llevamos a domicilio en{" "}
+              {site.coverage.slice(1).join(", ")} y más.
+            </p>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
