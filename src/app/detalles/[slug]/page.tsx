@@ -123,7 +123,7 @@ export default async function ProductPage(props: { params: Promise<Params> }) {
                 <Link
                   key={occasion.id}
                   href={`/detalles?ocasion=${occasion.slug}`}
-                  className="border-pink-soft text-ink hover:border-pink hover:text-pink rounded-full border bg-white px-3 py-1 text-xs font-medium transition-colors"
+                  className="border-pink-soft text-ink hover:border-pink hover:text-pink rounded-full border bg-white px-3.5 py-2 text-xs font-medium transition-colors"
                 >
                   {occasion.emoji && (
                     <span className="mr-1" aria-hidden>
