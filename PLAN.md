@@ -60,9 +60,9 @@ Estado: `[ ]` pendiente · `[~]` en progreso · `[x]` hecho
 ## F6 — Pulido y entrega
 
 - [x] Banners de temporada automáticos por fecha (implementado desde F0/F3: RLS filtra por vigencia y el admin los crea con fechas; probado E2E en F3)
-- [~] Lighthouse: performance móvil > 90 — optimizado (fuentes −60%, cache de datos TTFB 240→30ms, image priorities, a11y/BP/SEO en 100/100/92-100, CLS 0). En la máquina de desarrollo (con Docker+Node+Chrome compitiendo) marca 86–88 (cpu×4) / 89–92 (cpu×1); el bundle está limpio (solo framework). **Confirmar ≥90 con PageSpeed sobre el dominio real tras el deploy** (paso incluido en el runbook).
+- [~] Lighthouse: performance móvil > 90 — optimizado (fuentes −60%, cache de datos TTFB 240→30ms, image priorities). **Medido contra producción** (consentidos.vercel.app, 2026-07-07): a11y/BP/SEO **100/100/100** (el SEO 92 era artefacto de lab, resuelto con dominio real), CLS 0, TTFB 190ms. Performance 79–82 medido desde la máquina dev (la CPU local con throttling ×4 domina el TBT de hidratación, no la infraestructura). **Falta solo**: correr [pagespeed.web.dev](https://pagespeed.web.dev) sobre la URL (la cuota diaria anónima de la API se agotó; en el navegador toma 2 min).
 - [x] Manual de uso del panel: `docs/manual-panel.pdf` (12 págs, español simple, pantallazos reales de cada sección; fuente HTML en `docs/manual/` para regenerarlo)
-- [~] Dominio + deploy producción + cuentas — **runbook completo en `docs/DEPLOY.md`** (Supabase link+push+seed, cuenta admin, Resend con dominio, Vercel con env vars, checklist de humo). Ejecutar cuando el cliente tenga las cuentas.
+- [~] Dominio + deploy producción + cuentas — **deploy de DEMO en línea: [consentidos.vercel.app](https://consentidos.vercel.app)** (2026-07-07, cuentas del desarrollador; smoke E2E 6/6 OK, Storage probado, datos de prueba limpiados). Pendiente de terceros: cuentas del cliente + dominio + Resend — migración documentada en `docs/DEPLOY.md` §6.
 - [ ] Sesión de capacitación con el cliente (el manual la soporta; requiere agenda)
 
 ## Decisiones registradas
@@ -94,6 +94,31 @@ Estado: `[ ]` pendiente · `[~]` en progreso · `[x]` hecho
 - **Manual del panel en HTML→PDF con Chromium** (2026-07-07): sin dependencias nuevas; la fuente HTML queda en `docs/manual/` para regenerar el PDF cuando el panel cambie.
 - **Epilogue (cuerpo) con `font-display: optional`** (2026-07-07, F6): en una primera visita con red lenta el cuerpo pinta con el fallback ajustado (métricamente casi igual) en vez de re-pintar tarde — eso desencadenaba el LCP de texto en Lighthouse. Fraunces y Dancing Script (la voz de marca en títulos/acentos) conservan swap y siempre llegan.
 - **Cache de datos públicos con `unstable_cache` + `revalidateTag("public-data")`** (2026-07-07, F6): las consultas del catálogo/banner/zonas se cachean 5 min en el servidor y las server actions del admin invalidan el tag al guardar — baja el TTFB de las páginas dinámicas (Lighthouse) sin sacrificar frescura tras editar en el panel.
+- **Deploy de demo en cuentas del desarrollador** (2026-07-07): el cliente aún no tiene cuentas y David necesita mostrar el sitio ya. Demo en `consentidos.vercel.app`: Supabase `consentidos` (ref `ekfbkqlkblnfmgrfgcgd`, us-east-1), Vercel `consentidos` con GitHub `naranjodavid04/ConSentidos` conectado (auto-deploy en push a main), **sin Resend** (el email se omite con warning; los pedidos/cotizaciones llegan igual al panel). Para liberar el cupo free tier se pausó (con autorización de David) su proyecto prototipo sin nombre — restaurable desde el dashboard. La migración a las cuentas del cliente quedó en `docs/DEPLOY.md` §6.
+
+## Estado de sesión — 2026-07-07 (sexta sesión)
+
+**Hecho**: **el sitio está EN LÍNEA — [consentidos.vercel.app](https://consentidos.vercel.app)**,
+deploy de demo con las cuentas de David (decisión registrada).
+(1) Supabase hosted `consentidos` (us-east-1): 4 migraciones + seed completo
+(14 productos, 11 ocasiones, 6 zonas, 1 banner), usuario admin
+`dnl120601@gmail.com`, RLS verificada (lectura pública OK, INSERT anónimo
+bloqueado 42501), Storage probado (subir/leer/borrar). Se pausó el proyecto
+prototipo sin nombre de David para liberar cupo free tier.
+(2) Vercel `consentidos` con las 4 env vars, GitHub conectado (auto-deploy
+en push a main). (3) **Smoke E2E 6/6 OK** contra producción: home, filtros,
+carrito, checkout (pedido real creado y verificado en el panel), cotización
+de eventos, login/redirect del admin. Datos de prueba borrados después.
+(4) Lighthouse contra producción: a11y/BP/SEO 100/100/100, CLS 0, TTFB 190ms;
+perf 79–82 desde la máquina dev (CPU local, no la infra). (5) `docs/DEPLOY.md`
+con nota de estado de la demo + §6 de migración a cuentas del cliente.
+
+**Pendiente**: PageSpeed en navegador (cuota API agotada hoy, 2 min manual),
+y lo de terceros: cuentas del cliente + dominio + Resend (migración en
+DEPLOY.md §6), capacitación, F5 Wompi.
+
+**Siguiente paso lógico**: mostrar la demo al cliente; cuando dé el visto
+bueno, ejecutar DEPLOY.md con sus cuentas y agendar la capacitación.
 
 ## Estado de sesión — 2026-07-07 (quinta sesión)
 
