@@ -46,9 +46,9 @@ Estado: `[ ]` pendiente · `[~]` en progreso · `[x]` hecho
 
 ## F4 — Cotizaciones (Eventos y Corporativo)
 
-- [ ] Landing Eventos (paleta dorado/negro): galería, paquetes de referencia, formulario
-- [ ] Landing Corporativo (paleta azul): casos, formulario B2B
-- [ ] Guardar en `quotes` + email de notificación + wa.me
+- [x] Landing Eventos (dorado/negro): galería con fotos reales del feed, tipos de celebración (sin precios inventados — ver decisión) y formulario
+- [x] Landing Corporativo (azul): mascota real de la sub-marca, "así funciona" y formulario B2B (empresa, unidades, presupuesto)
+- [x] Guardar en `quotes` (server action + Zod + service role) + email de notificación + wa.me pre-armado en la confirmación
 
 ## F5 — Pagos Wompi
 
@@ -87,6 +87,31 @@ Estado: `[ ]` pendiente · `[~]` en progreso · `[x]` hecho
 - **Dashboard `/admin` con conteos y atajos** (2026-07-06, F3): adición pequeña no listada — landing natural del panel para usuaria no técnica.
 - **Botón "Borrar ejemplos" en productos** (2026-07-06, F3): elimina los seeds `is_example` con confirmación, para cuando el cliente cargue el catálogo real.
 - **Borrar producto = ocultarlo si tiene pedidos** (2026-07-06, F3): si el producto aparece en pedidos, se ofrece "Ocultar" en vez de borrar (el historial de pedidos no se rompe; los items igual guardan snapshot).
+- **F4 sin "paquetes de referencia" con precios** (2026-07-07): CLAUDE.md prohíbe inventar precios y no hay tarifas reales de eventos. La landing de Eventos muestra tipos de celebración (sin precios) + galería + formulario; los paquetes con precio se agregan cuando el cliente los defina.
+- **Galería de Eventos estática** (2026-07-07): fotos reales del feed de IG servidas desde `/public`. Galería administrable desde el panel pasa al backlog — no bloquea captar cotizaciones.
+- **Cotizaciones vía server action compartido** (2026-07-07): un solo `createQuote` con Zod + service role (mismo patrón de pedidos), reusado por ambos formularios; éxito en línea con CTA wa.me pre-armado.
+
+## Estado de sesión — 2026-07-07 (cuarta sesión)
+
+**Hecho**: **F4 completo y verificado E2E**. Landing de Eventos (dorado/negro:
+hero, "lo que montamos" sin precios inventados, galería con 4 fotos reales del
+feed y formulario con fecha/personas) y landing de Personalizados (azul: mascota
+kawaii real recortada de la sub-marca, "así funciona" con el copy de su IG y
+formulario B2B con empresa/unidades/presupuesto). Ambos formularios escriben en
+`quotes` vía server action compartido (Zod + service role), envían email por
+Resend (omitible) y confirman en línea con CTA wa.me pre-armado. Verificado con
+Playwright: ambas cotizaciones enviadas → filas correctas en DB → contador del
+dashboard → bandeja del admin con todos los datos → marcada como contactada;
+anon sigue sin leer `quotes`. Assets nuevos en `public/brand/` (mascota +
+montaje picnic). Build/lint verdes; datos de prueba limpiados y usuario admin
+local recreado.
+
+**A medias**: nada. Con F4, las 6 funcionalidades públicas + admin del sitio
+están completas: solo quedan F5 (Wompi) y F6 (pulido y entrega).
+
+**Siguiente paso lógico**: F5 (Wompi) requiere cuenta del cliente — si no está
+lista, saltar a **F6**: Lighthouse móvil >90, manual del panel en PDF, dominio
+y deploy a producción (Vercel + Supabase hosted + migraciones con `db push`).
 
 ## Estado de sesión — 2026-07-07 (tercera sesión)
 
