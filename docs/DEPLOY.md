@@ -4,6 +4,13 @@ Pasos para llevar el sitio a producción con las cuentas del cliente.
 Duración estimada: 1–2 horas la primera vez. Requisitos: acceso al repo,
 y cuentas (a nombre del cliente) en **Supabase**, **Vercel** y **Resend**.
 
+> **Estado actual (2026-07-07)**: existe un **deploy de demo** en
+> `https://consentidos.vercel.app` corriendo con las cuentas del desarrollador
+> (Supabase proyecto `consentidos` ref `ekfbkqlkblnfmgrfgcgd`, Vercel proyecto
+> `consentidos`, GitHub `naranjodavid04/ConSentidos` conectado con auto-deploy,
+> sin Resend). Sirve para mostrar al cliente; la migración a sus cuentas está
+> en la sección "Migración de la demo a las cuentas del cliente" al final.
+
 ## 1. Supabase (base de datos)
 
 1. Crear proyecto en [supabase.com](https://supabase.com) — región `us-east-1`
@@ -79,7 +86,31 @@ y cuentas (a nombre del cliente) en **Supabase**, **Vercel** y **Resend**.
       real: objetivo performance móvil ≥ 90 (en local ya se midió 86–92 con
       Lighthouse; en Vercel con CDN debería subir).
 
-## 6. Después del deploy
+## 6. Migración de la demo a las cuentas del cliente
+
+La demo (`consentidos.vercel.app`) no acumula datos reales: todo se
+reconstruye en las cuentas del cliente con los pasos 1–5 de este runbook.
+Orden sugerido:
+
+1. **Supabase del cliente**: crear proyecto nuevo (paso 1 completo: `link` al
+   nuevo ref + `db push --include-seed` + cuenta admin de la dueña). Si en la
+   demo se llegó a cargar catálogo real (productos/fotos), exportarlo antes:
+   `supabase db dump` para datos + descargar el bucket `media` del Storage.
+   Si la demo solo tiene los ejemplos del seed, no hay nada que migrar.
+2. **Vercel del cliente**: importar el mismo repo GitHub en su cuenta
+   (paso 3), con las env vars apuntando al **nuevo** Supabase. Alternativa:
+   transferir el proyecto `consentidos` desde el dashboard de Vercel
+   (Settings → Transfer) y solo cambiar las env vars.
+3. **Dominio** (paso 4) y **Resend** (paso 2) directo en las cuentas nuevas.
+4. **Apagar la demo**: pausar/borrar el proyecto Supabase del desarrollador y
+   borrar el proyecto Vercel de demo (o queda como staging si se prefiere).
+
+> **Nota free tier**: los proyectos gratis de Supabase se **pausan tras ~1
+> semana sin actividad** y el límite es 2 activos por cuenta. Antes de una
+> demo, verificar en el dashboard que el proyecto esté activo (restaurar es
+> un clic + ~2 min).
+
+## 7. Después del deploy
 
 - Cargar el catálogo real con la dueña (sesión de capacitación con
   `docs/manual-panel.pdf` como guía) y al final tocar **Quitar ejemplos**.
