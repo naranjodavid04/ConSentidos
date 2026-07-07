@@ -23,17 +23,17 @@ Estado: `[ ]` pendiente · `[~]` en progreso · `[x]` hecho
 - [x] Layout global: header (3 líneas), footer, botón flotante WhatsApp
 - [x] Home: banner de temporada, presentación de las 3 líneas, destacados
 - [x] Catálogo Detalles: grid, filtros por ocasión/tipo, orden por precio
-- [~] Ficha de producto: galería, precio, ocasiones ✓ — el CTA es "Pedir por WhatsApp" como puente; el botón de carrito real llega con F2
+- [x] Ficha de producto: galería, precio, ocasiones, botón agregar al carrito (WhatsApp quedó como CTA secundario)
 - [x] SEO local básico (metadata, OG images, sitemap, robots, favicon)
 - [x] Stubs `/eventos` y `/personalizados` con su paleta + CTA WhatsApp (adelanto de F4)
 
 ## F2 — Carrito y checkout (pago manual)
 
-- [ ] Carrito (estado en cliente, persistido en localStorage)
-- [ ] Checkout: datos cliente, recogida/domicilio + zona con tarifa, mensaje de tarjeta, fecha deseada
-- [ ] Crear orden en DB + página de confirmación
-- [ ] Link wa.me pre-armado con resumen del pedido
-- [ ] Email a la tienda por cada pedido (Resend)
+- [x] Carrito (estado en cliente, persistido en localStorage; badge en header)
+- [x] Checkout: datos cliente, recogida/domicilio + zona con tarifa, mensaje de tarjeta, fecha deseada (hora opcional)
+- [x] Crear orden en DB (RPC `create_order` transaccional) + página de confirmación
+- [x] Link wa.me pre-armado con resumen del pedido (número, items, total, entrega)
+- [x] Email a la tienda por cada pedido (Resend vía API; se omite con warning si no hay `RESEND_API_KEY`/`ORDER_NOTIFY_EMAIL`)
 
 ## F3 — Panel admin
 
@@ -76,28 +76,33 @@ Estado: `[ ]` pendiente · `[~]` en progreso · `[x]` hecho
 - **`orders.order_number` legible desde F0** (2026-07-06): código corto tipo `CS-1043` para referenciar pedidos por WhatsApp sin UUIDs. Agregarlo ahora evita una migración en F2.
 - **Flag `ejemplo` = columna `is_example boolean`** (2026-07-06): permite filtrar/borrar los seeds de ejemplo desde el admin cuando el cliente cargue el catálogo real.
 - **Stubs de `/eventos` y `/personalizados` adelantados a F1** (2026-07-06): hero con la paleta de cada línea + CTA WhatsApp, para que la nav de 3 líneas no tenga links rotos. El resto (galería, formularios) sigue en F4.
+- **Órdenes vía RPC `create_order` security definer** (2026-07-06, F2): order + items en una sola transacción Postgres; execute solo para service_role. Evita órdenes huérfanas si falla el insert de items.
+- **Confirmación sin abrir `orders` a anon** (2026-07-06, F2): el server action devuelve el resumen y `/confirmacion` lo lee de sessionStorage. No se exponen datos del pedido por URL ni por RLS.
+- **Precios recalculados server-side** (2026-07-06, F2): el carrito del cliente es solo intención; el server action re-lee precio/nombre/status de la DB y arma el total. El carrito no puede manipular precios.
+- **Resend por fetch directo, sin SDK** (2026-07-06, F2): única dependencia nueva de F2 es `zod`. Sin `RESEND_API_KEY` configurada, el email se omite con warning y la orden se crea igual.
 
-## Estado de sesión — 2026-07-06
+## Estado de sesión — 2026-07-06 (segunda sesión)
 
-**Hecho**: F0 completo y verificado (scaffold, migraciones aplican limpio contra
-Supabase local, RLS probada como anon vía REST, seeds con 14 productos de ejemplo
-con fotos reales del feed de IG, tipos generados). F1 completo salvo el botón de
-carrito (CTA WhatsApp como puente hasta F2): layout global, home, catálogo con
-filtros/orden, ficha, stubs de Eventos/Personalizados, SEO. Auditoría móvil
-(iPhone SE): 87–91/100, sin overflow ni errores de consola; tap targets ya
-ajustados tras la auditoría. Dirección visual: Fraunces + Epilogue + Dancing
-Script sobre crema/fucsia, bordes festoneados y precios en etiqueta de regalo.
+**Hecho**: F1 cerrado y **F2 completo**. Carrito en localStorage (context +
+badge + página), checkout con recogida/domicilio por municipio, fecha (hora
+opcional) y mensaje de tarjeta, orden creada por RPC `create_order`
+(transaccional, precios releídos de la DB), confirmación con wa.me pre-armado
+y email a la tienda vía Resend (omitible sin API key). Verificado E2E con
+Playwright: ficha → carrito (qty 2) → checkout con domicilio La Ceja → pedido
+CS-1001 en DB con total correcto ($320.000 + $12.000) e items snapshot; anon
+sigue sin poder leer `orders` ni ejecutar la RPC. Screenshots móviles de las 3
+pantallas nuevas revisados. Build y lint verdes.
 
-**A medias**: nada bloqueante. El botón "agregar al carrito" espera a F2.
+**A medias**: nada. Los pedidos de prueba se limpiaron con `db reset`.
 
-**Notas de entorno**: Docker Desktop + WSL2 quedaron instalados en esta máquina
-(los necesita Supabase local). `.env.local` apunta al stack local; `.env.example`
-documenta las variables. El logo real es un JPG pequeño (150px) — pedir al
-cliente el logo vectorial o en alta resolución antes del deploy.
+**Notas de entorno**: `.env.example` ganó `ORDER_NOTIFY_EMAIL`. Para que el
+email funcione en producción faltará la API key de Resend y (idealmente) un
+dominio verificado como remitente — hoy usa `pedidos@resend.dev`. Sigue
+pendiente pedir al cliente el logo vectorial.
 
-**Siguiente paso lógico**: F2 — carrito (localStorage) + checkout con zonas de
-domicilio + creación de orden vía Server Action con service role + link wa.me
-con resumen + email Resend.
+**Siguiente paso lógico**: F3 — panel admin (`/admin` con Supabase Auth): CRUD
+de productos con fotos, gestión de pedidos por estado, banners y zonas. Con eso
+la tienda ya puede autoadministrarse; F4 (cotizaciones) puede ir después.
 
 ## Backlog (no comprometido)
 
