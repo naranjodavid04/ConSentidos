@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Dancing_Script, Epilogue, Fraunces } from "next/font/google";
 
-import { Footer } from "@/components/layout/footer";
-import { Header } from "@/components/layout/header";
-import { WhatsAppFab } from "@/components/layout/whatsapp-fab";
 import { CartProvider } from "@/lib/cart/cart-context";
 import { site } from "@/lib/site";
 
@@ -51,12 +48,7 @@ export default function RootLayout({
       <body
         className={`${fraunces.variable} ${epilogue.variable} ${dancing.variable} grain min-h-screen antialiased`}
       >
-        <CartProvider>
-          <Header />
-          <main>{children}</main>
-          <Footer />
-          <WhatsAppFab />
-        </CartProvider>
+        <CartProvider>{children}</CartProvider>
       </body>
     </html>
   );
