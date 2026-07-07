@@ -8,6 +8,23 @@
 --  - authenticated = admin: las únicas cuentas se crean a mano.
 -- ============================================================
 
+-- ---------- Grants ----------
+-- Supabase ya no concede privilegios por defecto sobre tablas nuevas:
+-- los grants son la primera capa y RLS restringe las filas.
+
+grant usage on schema public to anon, authenticated, service_role;
+
+-- Visitantes: solo lectura de las tablas públicas (RLS filtra filas).
+grant select on product_types, occasions, products, product_occasions,
+  product_images, delivery_zones, banners to anon;
+
+-- Admin autenticado y service role: todo (RLS aplica a authenticated).
+grant all on all tables in schema public to authenticated, service_role;
+grant usage, select on all sequences in schema public
+  to authenticated, service_role;
+
+-- ---------- RLS ----------
+
 alter table product_types enable row level security;
 alter table occasions enable row level security;
 alter table products enable row level security;
