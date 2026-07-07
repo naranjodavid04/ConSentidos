@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
@@ -50,6 +50,7 @@ function toRow(data: z.output<typeof bannerSchema>) {
 }
 
 function revalidateBanners() {
+  revalidateTag("public-data");
   revalidatePath("/");
   revalidatePath("/admin/banners");
 }

@@ -1,3 +1,5 @@
+import { unstable_cache } from "next/cache";
+
 import { createPublicClient } from "@/lib/supabase/public";
 
 // ---------- Tipos de dominio para la UI ----------
@@ -81,7 +83,7 @@ function shapeProduct(raw: RawProduct): CatalogProduct {
 
 // Ocasiones que tienen al menos un producto visible (para no pintar
 // filtros que lleven a resultados vacíos).
-export async function getOccasionsWithProducts(): Promise<Occasion[]> {
+async function getOccasionsWithProductsImpl(): Promise<Occasion[]> {
   const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("occasions")
@@ -100,7 +102,7 @@ export async function getOccasionsWithProducts(): Promise<Occasion[]> {
   }));
 }
 
-export async function getProductTypesWithProducts(): Promise<ProductType[]> {
+async function getProductTypesWithProductsImpl(): Promise<ProductType[]> {
   const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("product_types")
@@ -116,7 +118,7 @@ export async function getProductTypesWithProducts(): Promise<ProductType[]> {
   }));
 }
 
-export async function getProducts(
+async function getProductsImpl(
   filters: CatalogFilters = {},
 ): Promise<CatalogProduct[]> {
   const supabase = createPublicClient();
@@ -163,9 +165,7 @@ export async function getProducts(
   return (data as unknown as RawProduct[]).map(shapeProduct);
 }
 
-export async function getFeaturedProducts(
-  limit = 8,
-): Promise<CatalogProduct[]> {
+async function getFeaturedProductsImpl(limit = 8): Promise<CatalogProduct[]> {
   const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("products")
@@ -178,7 +178,7 @@ export async function getFeaturedProducts(
   return (data as unknown as RawProduct[]).map(shapeProduct);
 }
 
-export async function getProductBySlug(
+async function getProductBySlugImpl(
   slug: string,
 ): Promise<CatalogProduct | null> {
   const supabase = createPublicClient();
@@ -212,7 +212,7 @@ export interface Banner {
 }
 
 // RLS ya limita a banners activos y vigentes por fecha.
-export async function getCurrentBanner(): Promise<Banner | null> {
+async function getCurrentBannerImpl(): Promise<Banner | null> {
   const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("banners")
@@ -230,7 +230,7 @@ export interface DeliveryZone {
   fee_cop: number;
 }
 
-export async function getActiveZones(): Promise<DeliveryZone[]> {
+async function getActiveZonesImpl(): Promise<DeliveryZone[]> {
   const supabase = createPublicClient();
   const { data, error } = await supabase
     .from("delivery_zones")
@@ -240,3 +240,46 @@ export async function getActiveZones(): Promise<DeliveryZone[]> {
   if (error) throw error;
   return data;
 }
+
+// ---------- Cache de servidor ----------
+// Los datos públicos cambian solo desde el panel: se cachean 5 minutos y
+// las server actions del admin invalidan el tag "public-data" al guardar.
+// Los argumentos hacen parte de la llave de cache automáticamente.
+
+const CACHE_OPTS = { revalidate: 300, tags: ["public-data"] };
+
+export const getOccasionsWithProducts = unstable_cache(
+  getOccasionsWithProductsImpl,
+  ["occasions-with-products"],
+  CACHE_OPTS,
+);
+export const getProductTypesWithProducts = unstable_cache(
+  getProductTypesWithProductsImpl,
+  ["types-with-products"],
+  CACHE_OPTS,
+);
+export const getProducts = unstable_cache(
+  getProductsImpl,
+  ["products"],
+  CACHE_OPTS,
+);
+export const getFeaturedProducts = unstable_cache(
+  getFeaturedProductsImpl,
+  ["featured-products"],
+  CACHE_OPTS,
+);
+export const getProductBySlug = unstable_cache(
+  getProductBySlugImpl,
+  ["product-by-slug"],
+  CACHE_OPTS,
+);
+export const getCurrentBanner = unstable_cache(
+  getCurrentBannerImpl,
+  ["current-banner"],
+  CACHE_OPTS,
+);
+export const getActiveZones = unstable_cache(
+  getActiveZonesImpl,
+  ["active-zones"],
+  CACHE_OPTS,
+);

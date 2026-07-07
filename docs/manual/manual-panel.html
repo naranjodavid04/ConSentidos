@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<title>Manual del panel — Con Sentidos</title>
+<style>
+  :root {
+    --pink: #e91e7a; --pink-soft: #f9d9e7; --cream: #fff9f5;
+    --ink: #43323a; --ink-soft: #7d6a72; --gold: #c9a24b;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: Georgia, "Times New Roman", serif; color: var(--ink); background: white; }
+  main { max-width: 700px; margin: 0 auto; padding: 24px; }
+  .portada { text-align: center; padding: 130px 0 40px; page-break-after: always; }
+  .script { color: var(--pink); font-style: italic; font-size: 42px; font-weight: bold; }
+  .portada h1 { font-size: 30px; margin-top: 18px; }
+  .portada p { color: var(--ink-soft); margin-top: 10px; font-size: 15px; }
+  section { page-break-before: always; padding-top: 10px; }
+  h2 { color: var(--pink); font-size: 24px; border-bottom: 3px solid var(--pink-soft); padding-bottom: 8px; margin-bottom: 14px; }
+  h3 { font-size: 17px; margin: 18px 0 6px; }
+  p, li { font-size: 14.5px; line-height: 1.65; }
+  ol, ul { padding-left: 22px; margin: 8px 0; }
+  li { margin-bottom: 6px; }
+  .nota { background: var(--cream); border: 1.5px solid var(--pink-soft); border-radius: 12px; padding: 12px 16px; margin: 14px 0; font-size: 13.5px; }
+  .nota strong { color: var(--pink); }
+  img.pantalla { display: block; max-width: 320px; margin: 14px auto; border: 1.5px solid var(--pink-soft); border-radius: 14px; box-shadow: 0 2px 8px rgba(67,50,58,.12); }
+  img.ancha { max-width: 420px; }
+  .estado { display: inline-block; border-radius: 99px; padding: 2px 10px; font-size: 12.5px; font-weight: bold; font-family: Arial, sans-serif; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; }
+  td, th { border: 1px solid var(--pink-soft); padding: 8px 10px; font-size: 13.5px; text-align: left; vertical-align: top; }
+  th { background: var(--cream); }
+  footer { text-align: center; color: var(--ink-soft); font-size: 12px; padding: 30px 0 10px; }
+</style>
+</head>
+<body>
+<main>
+
+<div class="portada">
+  <div class="script">Con ♥ Sentidos</div>
+  <h1>Manual del panel de la tienda</h1>
+  <p>Cómo administrar tus productos, pedidos, cotizaciones,<br/>banners y zonas de domicilio — paso a paso.</p>
+  <p style="margin-top:40px">Julio de 2026</p>
+</div>
+
+<section>
+  <h2>1. Entrar al panel</h2>
+  <ol>
+    <li>En el navegador de tu celular o computador, entra a <strong>tusitio.com/admin</strong>.</li>
+    <li>Escribe tu <strong>correo</strong> y tu <strong>contraseña</strong> y toca <strong>Entrar</strong>.</li>
+    <li>Para salir, toca <strong>Salir</strong> arriba a la derecha.</li>
+  </ol>
+  <img class="pantalla" src="img/01-login.png" alt="Pantalla de entrada al panel" />
+  <div class="nota"><strong>Tip:</strong> guarda la página en favoritos o en la pantalla de inicio del celular. Si olvidas la contraseña, escríbenos y te la restablecemos.</div>
+</section>
+
+<section>
+  <h2>2. El inicio: así va la tienda</h2>
+  <p>Al entrar ves tres números: <strong>pedidos nuevos</strong>, <strong>en preparación</strong> y <strong>cotizaciones nuevas</strong>. Tocando cualquiera vas directo a esa lista. Abajo están los pedidos por atender.</p>
+  <img class="pantalla" src="img/02-dashboard.png" alt="Pantalla de inicio del panel" />
+  <div class="nota"><strong>Rutina sugerida:</strong> entra 2–3 veces al día y revisa que "Pedidos nuevos" esté en 0 antes de cerrar la jornada.</div>
+</section>
+
+<section>
+  <h2>3. Pedidos</h2>
+  <p>Cada pedido pasa por estos estados. Tú lo vas moviendo con un botón a medida que avanzas:</p>
+  <table>
+    <tr><th>Estado</th><th>Qué significa</th></tr>
+    <tr><td><span class="estado" style="background:#e91e7a;color:white">Nuevo</span></td><td>Acaba de llegar del sitio. Revísalo y confírmalo con el cliente por WhatsApp.</td></tr>
+    <tr><td><span class="estado" style="background:#e8d9b5">En preparación</span></td><td>Ya lo estás armando.</td></tr>
+    <tr><td><span class="estado" style="background:#d9f1f9">Listo para entregar</span></td><td>Armado y esperando entrega o recogida.</td></tr>
+    <tr><td><span class="estado" style="background:#d1fae5">Entregado</span></td><td>¡Misión cumplida!</td></tr>
+    <tr><td><span class="estado" style="background:#e5e5e5">Cancelado</span></td><td>No se hizo. Se puede reactivar si el cliente se arrepiente.</td></tr>
+  </table>
+  <img class="pantalla" src="img/03-pedidos.png" alt="Lista de pedidos con pestañas por estado" />
+  <h3>Dentro de un pedido</h3>
+  <ul>
+    <li>Ves los datos del cliente, la <strong>fecha y hora deseada</strong>, el <strong>mensaje de la tarjeta</strong> y el total.</li>
+    <li><strong>Escribirle</strong> abre WhatsApp directo con el cliente.</li>
+    <li>El botón grande rosado avanza el pedido al siguiente paso.</li>
+    <li><strong>Ya pagó</strong> = te llegó la transferencia. <strong>Paga al recibir</strong> = contraentrega.</li>
+    <li><strong>Cancelar pedido</strong> siempre pregunta antes, tranquila.</li>
+  </ul>
+  <img class="pantalla" src="img/04-pedido-detalle.png" alt="Detalle de un pedido con botones de acción" />
+</section>
+
+<section>
+  <h2>4. Productos</h2>
+  <img class="pantalla" src="img/05-productos.png" alt="Lista de productos" />
+  <h3>Crear un producto</h3>
+  <ol>
+    <li>Toca <strong>+ Agregar producto</strong>.</li>
+    <li>Escribe el <strong>nombre</strong>, la <strong>descripción</strong> (lo que lee el cliente) y el <strong>precio</strong> en pesos, sin puntos: <em>85000</em>.</li>
+    <li>Elige el <strong>tipo</strong> y marca las <strong>ocasiones</strong> — así aparece en los filtros del catálogo.</li>
+    <li>Toca <strong>agregar fotos</strong> y elige las de tu celular: se ajustan solas de tamaño. La primera es la portada.</li>
+    <li>Toca <strong>Crear producto</strong>. Ya queda visible en el sitio.</li>
+  </ol>
+  <img class="pantalla" src="img/06-producto-form.png" alt="Formulario de producto" />
+  <h3>Los tres estados de un producto</h3>
+  <table>
+    <tr><td><strong>Activo</strong></td><td>Se ve en el catálogo y se puede pedir.</td></tr>
+    <tr><td><strong>Agotado</strong></td><td>Se ve (con aviso) pero no se puede pedir. Ideal cuando se te acaba un material.</td></tr>
+    <tr><td><strong>Oculto</strong></td><td>Desaparece del sitio sin borrarse.</td></tr>
+  </table>
+  <div class="nota"><strong>Productos de ejemplo:</strong> el sitio viene con productos marcados "ejemplo" (fotos de tu Instagram) para que no se vea vacío. Cuando cargues tu catálogo real, usa el botón <strong>Quitar ejemplos</strong> — te pregunta antes.</div>
+  <div class="nota"><strong>¿Borrar un producto?</strong> Si ya tuvo pedidos, el panel lo oculta en vez de borrarlo, para que tu historial de ventas quede completo.</div>
+</section>
+
+<section>
+  <h2>5. Cotizaciones</h2>
+  <p>Cuando alguien llena el formulario de <strong>Eventos</strong> (dorado) o de <strong>Personalizados</strong> (azul) en el sitio, llega aquí y también a tu correo.</p>
+  <ul>
+    <li><strong>Responder</strong> abre WhatsApp con esa persona.</li>
+    <li>Cuando ya hablaron, toca <strong>Ya la contacté</strong>. Cuando se concrete (o no), <strong>Cerrar</strong>.</li>
+  </ul>
+  <img class="pantalla" src="img/07-cotizaciones.png" alt="Bandeja de cotizaciones" />
+</section>
+
+<section>
+  <h2>6. Banners de temporada</h2>
+  <p>El banner es la cinta rosada que aparece arriba de la portada del sitio ("Se acerca el Día de la Madre…"). Se <strong>prende y apaga solo</strong> según las fechas que le pongas.</p>
+  <ol>
+    <li>Toca <strong>+ Nuevo banner</strong>.</li>
+    <li>Escribe el título, elige a dónde lleva y las fechas <strong>desde / hasta</strong>.</li>
+    <li>Guarda. En la lista ves si está <em>Visible ahora</em>, <em>Programado</em> o <em>Vencido</em>.</li>
+  </ol>
+  <img class="pantalla" src="img/08-banners.png" alt="Lista de banners" />
+  <div class="nota"><strong>Tip:</strong> deja creados los banners de las fechas grandes del año (madres, amor y amistad, navidad) y se activarán solos.</div>
+</section>
+
+<section>
+  <h2>7. Zonas de domicilio</h2>
+  <ul>
+    <li>Cambia la <strong>tarifa</strong> de un municipio y toca <strong>Guardar</strong> — el checkout se actualiza solo.</li>
+    <li><strong>Pausar</strong> quita el municipio del checkout sin borrarlo (por ejemplo, si esa semana no hay quién lleve).</li>
+    <li>Agrega municipios nuevos abajo.</li>
+  </ul>
+  <img class="pantalla" src="img/09-zonas.png" alt="Zonas de domicilio" />
+</section>
+
+<section>
+  <h2>8. Si algo sale raro</h2>
+  <ul>
+    <li><strong>No pasa nada por mirar:</strong> ver pedidos, productos o cotizaciones nunca daña nada. Las acciones delicadas (borrar, cancelar) siempre te preguntan "¿estás segura?".</li>
+    <li>¿Una página se ve extraña o no carga? <strong>Refresca</strong> (desliza hacia abajo en el celular) y revisa tu internet.</li>
+    <li>¿No entra la contraseña? Escríbenos y te la restablecemos en minutos.</li>
+    <li>¿Cambiaste algo y el sitio no lo muestra? Dale hasta 5 minutos y refresca — el sitio guarda una copia rápida que se renueva sola.</li>
+    <li>Para cualquier otra cosa: escríbele al desarrollador. Ningún error tuyo puede dañar los pedidos ya guardados.</li>
+  </ul>
+  <footer>Con ♥ Sentidos — Manual del panel · Julio de 2026 · Hecho con cariño en el oriente antioqueño</footer>
+</section>
+
+</main>
+</body>
+</html>

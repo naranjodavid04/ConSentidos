@@ -98,6 +98,7 @@ export default async function HomePage() {
                   alt={product.name}
                   width={352}
                   height={440}
+                  priority
                   className="aspect-[4/5] object-cover"
                 />
               </Link>
