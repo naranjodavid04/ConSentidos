@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { CheckIcon, WhatsAppIcon } from "@/components/icons";
-import type { OrderSummary } from "@/app/checkout/actions";
+import type { OrderSummary } from "@/app/(publico)/checkout/actions";
 import { formatCOP } from "@/lib/format";
 
 export default function ConfirmationPage() {

@@ -37,12 +37,12 @@ Estado: `[ ]` pendiente · `[~]` en progreso · `[x]` hecho
 
 ## F3 — Panel admin
 
-- [ ] Auth Supabase (email/password, solo cuentas creadas manualmente)
-- [ ] CRUD productos con subida de fotos (resize client-side)
-- [ ] Gestión de pedidos: lista, filtros, cambio de estado
-- [ ] Bandeja de cotizaciones
-- [ ] CRUD banners y zonas de domicilio
-- [ ] UX no-técnica: confirmaciones, estados vacíos con instrucciones, cero jerga
+- [x] Auth Supabase (email/password, middleware en `/admin`, sin registro público)
+- [x] CRUD productos con subida de fotos (resize client-side en canvas → Server Action → Storage) + botón "Quitar ejemplos"
+- [x] Gestión de pedidos: tabs por estado con conteos, detalle con avance de estado, pago (pagado/contraentrega) y wa.me al cliente
+- [x] Bandeja de cotizaciones (lista, estados, responder por WhatsApp; formularios públicos llegan en F4)
+- [x] CRUD banners (vigencia automática por fechas) y zonas de domicilio (tarifa editable, pausar/activar, agregar)
+- [x] UX no-técnica: confirmaciones en destructivo, estados vacíos con instrucciones, explicaciones en cristiano, dashboard con conteos
 
 ## F4 — Cotizaciones (Eventos y Corporativo)
 
@@ -80,6 +80,41 @@ Estado: `[ ]` pendiente · `[~]` en progreso · `[x]` hecho
 - **Confirmación sin abrir `orders` a anon** (2026-07-06, F2): el server action devuelve el resumen y `/confirmacion` lo lee de sessionStorage. No se exponen datos del pedido por URL ni por RLS.
 - **Precios recalculados server-side** (2026-07-06, F2): el carrito del cliente es solo intención; el server action re-lee precio/nombre/status de la DB y arma el total. El carrito no puede manipular precios.
 - **Resend por fetch directo, sin SDK** (2026-07-06, F2): única dependencia nueva de F2 es `zod`. Sin `RESEND_API_KEY` configurada, el email se omite con warning y la orden se crea igual.
+- **Fotos del admin suben por Server Action + service role** (2026-07-06, F3): coherente con la decisión de F0 de no crear políticas en storage.objects. El navegador redimensiona antes (canvas, máx 1200px, JPEG q0.85) y `serverActions.bodySizeLimit` sube a 5mb.
+- **Slug autogenerado del nombre del producto** (2026-07-06, F3): con sufijo numérico si colisiona. La dueña nunca ve la palabra "slug" — cero jerga.
+- **Admin = cualquier usuario autenticado** (2026-07-06, F3): las cuentas se crean a mano en Supabase (modelo RLS de F0); el panel no gestiona usuarios.
+- **Middleware de auth solo cubre `/admin/:path*`** (2026-07-06, F3): las páginas públicas no tocan cookies y conservan su caché ISR.
+- **Dashboard `/admin` con conteos y atajos** (2026-07-06, F3): adición pequeña no listada — landing natural del panel para usuaria no técnica.
+- **Botón "Borrar ejemplos" en productos** (2026-07-06, F3): elimina los seeds `is_example` con confirmación, para cuando el cliente cargue el catálogo real.
+- **Borrar producto = ocultarlo si tiene pedidos** (2026-07-06, F3): si el producto aparece en pedidos, se ofrece "Ocultar" en vez de borrar (el historial de pedidos no se rompe; los items igual guardan snapshot).
+
+## Estado de sesión — 2026-07-07 (tercera sesión)
+
+**Hecho**: **F3 completo y verificado E2E**. Panel admin en `/admin` con auth
+Supabase (middleware solo en `/admin/*`; el sitio público quedó en el route
+group `(publico)` con su propio layout). Dashboard con conteos, pedidos con
+tabs por estado y detalle con botones grandes (avanzar estado, pago, cancelar
+con confirmación, wa.me al cliente), CRUD de productos con fotos
+redimensionadas en el navegador y subidas a Storage vía service role, bandeja
+de cotizaciones, banners con vigencia automática y zonas editables. Verificado
+con Playwright: login → crear producto con foto (quedó de 29KB en el bucket) →
+visible en el catálogo público → pedido real → gestionado en el panel
+(preparación + pagado) → tarifa de zona editada → banner nuevo visible en la
+home → logout. Sin sesión, `/admin/*` redirige a login (307). Build y lint
+verdes; datos de prueba limpiados con `db reset`.
+
+**Usuario admin local (solo desarrollo)**: `admin@consentidos.local` /
+`PruebaLocal2026!` — recrearlo tras cada `db reset` con la API admin de GoTrue
+o desde Studio (Authentication → Add user). En producción la cuenta real se
+crea desde el dashboard de Supabase.
+
+**A medias**: nada. Nota: los banners hoy son de texto (cinta en la home);
+el campo `image_path` existe si en F6 se quiere banner con imagen.
+
+**Siguiente paso lógico**: F4 — landings de Eventos (dorado/negro) y
+Personalizados (azul) con galería/casos + formularios de cotización que
+escriben en `quotes` (server action + service role, igual que pedidos) +
+email de notificación. La bandeja del admin ya está lista para recibirlas.
 
 ## Estado de sesión — 2026-07-06 (segunda sesión)
 
