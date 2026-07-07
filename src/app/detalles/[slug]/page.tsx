@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { AddToCartButton } from "@/components/cart/add-to-cart-button";
 import { TruckIcon, WhatsAppIcon } from "@/components/icons";
 import { ProductCard } from "@/components/product-card";
 import {
@@ -13,7 +14,7 @@ import {
 import { formatCOP } from "@/lib/format";
 import { orFallback } from "@/lib/safe";
 import { site, waLink } from "@/lib/site";
-import { resolveImageUrl } from "@/lib/supabase/public";
+import { resolveImageUrl } from "@/lib/images";
 
 export const revalidate = 300;
 
@@ -148,21 +149,34 @@ export default async function ProductPage(props: { params: Promise<Params> }) {
             </p>
           )}
 
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-8 space-y-3">
+            {!soldOut && (
+              <AddToCartButton
+                product={{
+                  id: product.id,
+                  slug: product.slug,
+                  name: product.name,
+                  priceCop: product.price_cop,
+                  imagePath: product.images[0]?.storage_path ?? null,
+                }}
+              />
+            )}
             <a
               href={waLink(orderMessage)}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-pink hover:bg-pink-deep inline-flex items-center gap-2 rounded-full px-6 py-3 font-semibold text-white shadow-sm transition-colors"
+              className={
+                soldOut
+                  ? "bg-pink hover:bg-pink-deep inline-flex items-center gap-2 rounded-full px-6 py-3 font-semibold text-white shadow-sm transition-colors"
+                  : "border-pink text-pink hover:bg-pink-soft inline-flex items-center gap-2 rounded-full border-2 px-6 py-2.5 text-sm font-semibold transition-colors"
+              }
             >
-              <WhatsAppIcon className="h-5 w-5" />
-              {soldOut ? "Preguntar disponibilidad" : "Pedir por WhatsApp"}
+              <WhatsAppIcon className="h-4 w-4" />
+              {soldOut
+                ? "Preguntar disponibilidad"
+                : "Prefiero pedir por WhatsApp"}
             </a>
           </div>
-          <p className="text-ink-soft mt-3 text-xs">
-            Muy pronto podrás armar tu pedido con carrito aquí mismo. Por ahora
-            te atendemos directo por WhatsApp.
-          </p>
 
           {/* Entrega */}
           <div className="border-pink-soft mt-8 rounded-(--radius-card) border bg-white p-5">

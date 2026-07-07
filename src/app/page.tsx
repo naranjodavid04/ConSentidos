@@ -16,7 +16,7 @@ import {
 } from "@/lib/data/catalog";
 import { orFallback } from "@/lib/safe";
 import { site, waDefault } from "@/lib/site";
-import { resolveImageUrl } from "@/lib/supabase/public";
+import { resolveImageUrl } from "@/lib/images";
 
 export const revalidate = 300;
 

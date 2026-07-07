@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { CartBadge } from "@/components/cart/cart-badge";
 import { HeartIcon, WhatsAppIcon } from "@/components/icons";
 import { site, waDefault } from "@/lib/site";
 
@@ -40,16 +41,19 @@ export function Header() {
           ))}
         </nav>
 
-        <a
-          href={waDefault}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="bg-pink hover:bg-pink-deep flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors"
-        >
-          <WhatsAppIcon className="h-4 w-4" />
-          <span className="hidden md:inline">{site.whatsappDisplay}</span>
-          <span className="md:hidden">Escríbenos</span>
-        </a>
+        <div className="flex items-center gap-1.5 sm:gap-3">
+          <a
+            href={waDefault}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-pink hover:bg-pink-deep flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors"
+          >
+            <WhatsAppIcon className="h-4 w-4" />
+            <span className="hidden md:inline">{site.whatsappDisplay}</span>
+            <span className="md:hidden">Escríbenos</span>
+          </a>
+          <CartBadge />
+        </div>
       </div>
 
       {/* Nav móvil: segunda fila, sin JS */}
