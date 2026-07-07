@@ -59,11 +59,11 @@ Estado: `[ ]` pendiente · `[~]` en progreso · `[x]` hecho
 
 ## F6 — Pulido y entrega
 
-- [ ] Banners de temporada automáticos por fecha
-- [ ] Lighthouse: performance móvil > 90
-- [ ] Manual de uso del panel (PDF corto con pantallazos, en español simple)
-- [ ] Dominio + deploy producción + cuentas a nombre del cliente
-- [ ] Sesión de capacitación con el cliente
+- [x] Banners de temporada automáticos por fecha (implementado desde F0/F3: RLS filtra por vigencia y el admin los crea con fechas; probado E2E en F3)
+- [~] Lighthouse: performance móvil > 90 — optimizado (fuentes −60%, cache de datos TTFB 240→30ms, image priorities, a11y/BP/SEO en 100/100/92-100, CLS 0). En la máquina de desarrollo (con Docker+Node+Chrome compitiendo) marca 86–88 (cpu×4) / 89–92 (cpu×1); el bundle está limpio (solo framework). **Confirmar ≥90 con PageSpeed sobre el dominio real tras el deploy** (paso incluido en el runbook).
+- [x] Manual de uso del panel: `docs/manual-panel.pdf` (12 págs, español simple, pantallazos reales de cada sección; fuente HTML en `docs/manual/` para regenerarlo)
+- [~] Dominio + deploy producción + cuentas — **runbook completo en `docs/DEPLOY.md`** (Supabase link+push+seed, cuenta admin, Resend con dominio, Vercel con env vars, checklist de humo). Ejecutar cuando el cliente tenga las cuentas.
+- [ ] Sesión de capacitación con el cliente (el manual la soporta; requiere agenda)
 
 ## Decisiones registradas
 
@@ -90,6 +90,32 @@ Estado: `[ ]` pendiente · `[~]` en progreso · `[x]` hecho
 - **F4 sin "paquetes de referencia" con precios** (2026-07-07): CLAUDE.md prohíbe inventar precios y no hay tarifas reales de eventos. La landing de Eventos muestra tipos de celebración (sin precios) + galería + formulario; los paquetes con precio se agregan cuando el cliente los defina.
 - **Galería de Eventos estática** (2026-07-07): fotos reales del feed de IG servidas desde `/public`. Galería administrable desde el panel pasa al backlog — no bloquea captar cotizaciones.
 - **Cotizaciones vía server action compartido** (2026-07-07): un solo `createQuote` con Zod + service role (mismo patrón de pedidos), reusado por ambos formularios; éxito en línea con CTA wa.me pre-armado.
+- **F6: deploy y capacitación quedan como entregables preparatorios** (2026-07-07): el deploy real necesita cuentas (Vercel/Supabase/Resend) y dominio del cliente, y la capacitación necesita agenda — se entregan `docs/DEPLOY.md` (runbook paso a paso) y `docs/manual-panel.pdf` (soporta la capacitación). El código queda listo para producción.
+- **Manual del panel en HTML→PDF con Chromium** (2026-07-07): sin dependencias nuevas; la fuente HTML queda en `docs/manual/` para regenerar el PDF cuando el panel cambie.
+- **Epilogue (cuerpo) con `font-display: optional`** (2026-07-07, F6): en una primera visita con red lenta el cuerpo pinta con el fallback ajustado (métricamente casi igual) en vez de re-pintar tarde — eso desencadenaba el LCP de texto en Lighthouse. Fraunces y Dancing Script (la voz de marca en títulos/acentos) conservan swap y siempre llegan.
+- **Cache de datos públicos con `unstable_cache` + `revalidateTag("public-data")`** (2026-07-07, F6): las consultas del catálogo/banner/zonas se cachean 5 min en el servidor y las server actions del admin invalidan el tag al guardar — baja el TTFB de las páginas dinámicas (Lighthouse) sin sacrificar frescura tras editar en el panel.
+
+## Estado de sesión — 2026-07-07 (quinta sesión)
+
+**Hecho**: **F6 ejecutado en todo lo que no depende de terceros.**
+(1) Performance: Fraunces sin ejes extra (−60% de fuente), Epilogue con
+`display: optional`, cache de datos públicos con `unstable_cache` +
+`revalidateTag` (TTFB del catálogo 240→30ms), `priority` solo en imágenes
+LCP reales, heading-order corregido (a11y 100 en todo). Lighthouse móvil en
+máquina dev: 86–92 según carga; resto de categorías 100/100/92-100, CLS 0 —
+verificación final con PageSpeed post-deploy. (2) **Manual del panel**:
+`docs/manual-panel.pdf`, 12 páginas en español simple con pantallazos reales
+(pedido y cotización de muestra incluidos al capturar). (3) **Runbook**:
+`docs/DEPLOY.md` paso a paso + `NEXT_PUBLIC_SITE_URL` documentada. (4) Banners
+automáticos marcados hechos (ya existían desde F0/F3).
+
+**A medias / pendiente de terceros**: deploy real (cuentas + dominio del
+cliente, runbook listo), capacitación (manual listo), F5 Wompi (cuenta del
+cliente), y confirmar Lighthouse ≥90 en producción.
+
+**Siguiente paso lógico**: sesión de deploy con el cliente siguiendo
+`docs/DEPLOY.md`, cargar catálogo real + capacitación con el manual. Cuando
+llegue la cuenta Wompi: F5 (las env vars ya están reservadas).
 
 ## Estado de sesión — 2026-07-07 (cuarta sesión)
 

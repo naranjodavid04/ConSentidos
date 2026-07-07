@@ -38,9 +38,9 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
       </div>
 
       <div className="flex flex-1 flex-col gap-2 p-4">
-        <h3 className="font-display text-ink group-hover:text-pink text-base leading-snug">
+        <p className="font-display text-ink group-hover:text-pink text-base leading-snug">
           {product.name}
-        </h3>
+        </p>
         {product.occasions.length > 0 && (
           <p className="text-ink-soft text-xs">
             {product.occasions.map((o) => o.name).join(" · ")}

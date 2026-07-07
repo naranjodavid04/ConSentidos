@@ -6,15 +6,20 @@ import { site } from "@/lib/site";
 
 import "./globals.css";
 
+// Payload de fuentes contenido: Fraunces sin ejes extra (el archivo variable
+// con SOFT pesa el doble). Las tres van preloaded: la script pinta acentos
+// above-the-fold y descubrirla tarde vía CSS alarga el LCP.
 const fraunces = Fraunces({
   variable: "--font-fraunces",
   subsets: ["latin"],
-  axes: ["SOFT", "opsz"],
 });
 
+// display optional: si la red es lenta en la primera visita, el cuerpo pinta
+// con el fallback ajustado en vez de re-pintar tarde (LCP). Ver PLAN.md.
 const epilogue = Epilogue({
   variable: "--font-epilogue",
   subsets: ["latin"],
+  display: "optional",
 });
 
 const dancing = Dancing_Script({

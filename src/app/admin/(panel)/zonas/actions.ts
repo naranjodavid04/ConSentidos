@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { z } from "zod";
 
 import { createServerSupabase } from "@/lib/supabase/server";
@@ -23,6 +23,7 @@ export interface ZoneActionResult {
 }
 
 function revalidateZones() {
+  revalidateTag("public-data");
   revalidatePath("/admin/zonas");
   revalidatePath("/checkout");
   revalidatePath("/detalles");

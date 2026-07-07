@@ -79,7 +79,7 @@ export default async function ProductPage(props: { params: Promise<Params> }) {
         <div>
           <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto rounded-(--radius-card)">
             {product.images.length > 0 ? (
-              product.images.map((image) => (
+              product.images.map((image, i) => (
                 <div
                   key={image.id}
                   className="border-pink-soft relative aspect-[4/5] w-full shrink-0 snap-center overflow-hidden rounded-(--radius-card) border bg-white"
@@ -89,7 +89,9 @@ export default async function ProductPage(props: { params: Promise<Params> }) {
                     alt={image.alt ?? product.name}
                     fill
                     sizes="(max-width: 1024px) 100vw, 50vw"
-                    priority
+                    // Solo la portada compite por ancho de banda inicial.
+                    priority={i === 0}
+                    fetchPriority={i === 0 ? "high" : undefined}
                     className={`object-cover ${soldOut ? "opacity-70 saturate-50" : ""}`}
                   />
                 </div>

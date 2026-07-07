@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
@@ -115,6 +115,7 @@ function parseProductForm(formData: FormData) {
 }
 
 function revalidatePublic() {
+  revalidateTag("public-data");
   revalidatePath("/");
   revalidatePath("/detalles");
   revalidatePath("/admin/productos");
