@@ -408,7 +408,7 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      create_order: { Args: { customer: Json; items: Json }; Returns: Json };
     };
     Enums: {
       delivery_method: "pickup" | "delivery";

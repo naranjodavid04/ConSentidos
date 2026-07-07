@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import type { CatalogProduct } from "@/lib/data/catalog";
 import { formatCOP } from "@/lib/format";
-import { resolveImageUrl } from "@/lib/supabase/public";
+import { resolveImageUrl } from "@/lib/images";
 
 export function ProductCard({ product }: { product: CatalogProduct }) {
   const cover = product.images[0];
