@@ -101,7 +101,7 @@ export default async function CatalogPage(props: {
           <div className="flex flex-wrap gap-2">
             <Link
               href={catalogHref({ tipo: params.tipo, orden: params.orden })}
-              className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+              className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
                 !activeOccasion
                   ? "bg-pink text-white"
                   : "border-pink-soft text-ink hover:border-pink border bg-white"
@@ -120,7 +120,7 @@ export default async function CatalogPage(props: {
                   tipo: params.tipo,
                   orden: params.orden,
                 })}
-                className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+                className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
                   occasion.slug === params.ocasion
                     ? "bg-pink text-white"
                     : "border-pink-soft text-ink hover:border-pink border bg-white"
@@ -143,18 +143,18 @@ export default async function CatalogPage(props: {
         {types.length > 0 && (
           <nav
             aria-label="Filtrar por tipo"
-            className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm"
+            className="flex flex-wrap items-center gap-x-3 text-sm"
           >
             <Link
               href={catalogHref({
                 ocasion: params.ocasion,
                 orden: params.orden,
               })}
-              className={
+              className={`inline-block py-2 whitespace-nowrap ${
                 !activeType
                   ? "text-pink font-semibold underline underline-offset-4"
                   : "text-ink-soft hover:text-pink"
-              }
+              }`}
             >
               Todo tipo de detalle
             </Link>
@@ -166,11 +166,11 @@ export default async function CatalogPage(props: {
                   tipo: type.slug === params.tipo ? undefined : type.slug,
                   orden: params.orden,
                 })}
-                className={
+                className={`inline-block py-2 whitespace-nowrap ${
                   type.slug === params.tipo
                     ? "text-pink font-semibold underline underline-offset-4"
                     : "text-ink-soft hover:text-pink"
-                }
+                }`}
               >
                 {type.name}
               </Link>
@@ -180,7 +180,7 @@ export default async function CatalogPage(props: {
 
         <nav
           aria-label="Ordenar"
-          className="text-ink-soft flex items-center gap-3 text-sm"
+          className="text-ink-soft flex flex-wrap items-center gap-x-3 text-sm"
         >
           <span>Ordenar:</span>
           {SORTS.map((s) => (
@@ -191,11 +191,11 @@ export default async function CatalogPage(props: {
                 tipo: params.tipo,
                 orden: s.param ?? undefined,
               })}
-              className={
+              className={`inline-block py-2 whitespace-nowrap ${
                 sort === s.value
                   ? "text-pink font-semibold underline underline-offset-4"
                   : "hover:text-pink"
-              }
+              }`}
             >
               {s.label}
             </Link>
